@@ -1,15 +1,32 @@
 {
-  "name": "hello-world",
+  "name": "tcfm-player",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha",
+    "lint": "eslint . --fix"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "ask-sdk-core": "^2.0.0",
-    "ask-sdk-model": "^1.0.0"
+    "ask-sdk-model": "^1.0.0",
+    "aws-sdk": "^2.283.1",
+    "feedparser": "^2.2.9",
+    "i18next": "^11.5.0",
+    "i18next-sprintf-postprocessor": "^0.2.2",
+    "request": "^2.87.0"
+  },
+  "devDependencies": {
+    "alexa-skill-test-framework": "^1.2.2",
+    "eslint": "^5.2.0",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-promise": "^3.8.0",
+    "eslint-plugin-standard": "^3.1.0",
+    "mocha": "^5.2.0",
+    "nock": "^9.4.4"
   }
 }
