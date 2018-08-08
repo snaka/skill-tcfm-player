@@ -59,8 +59,9 @@ async function restoreFromCache (podcastId, etag) {
     console.log(`restoreFromCache: ${targetPodcast.TABLE_NAME} ${podcastId}`)
     const restored = await dynamoDb.get({ TableName: targetPodcast.TABLE_NAME, Key: { podcastId } }).promise()
     // console.log(`restored: ${JSON.stringify(restored)}`);
-    if (restored.Item.headers.etag !== etag) {
-      console.log(`ETag changed cache:${restored.Item.headers.etag} !== current:${etag}`)
+    const cachedEtag = (((restored || {}).Item || {}).headers || {}).etag
+    if (cachedEtag !== etag) {
+      console.log(`ETag changed cache:${cachedEtag} !== current:${etag}`)
       return undefined
     }
     return restored.Item.episodes
@@ -80,6 +81,8 @@ exports.getEpisodeInfo = (podcastId, index) => {
       resolve(cachedFeed[index])
       return
     }
+
+    console.log('CACHE INVALIDATED')
 
     const feedparser = new FeedParser()
     const episodes = []
