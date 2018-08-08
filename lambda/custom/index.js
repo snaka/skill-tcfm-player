@@ -4,7 +4,6 @@
 
 const Alexa = require('ask-sdk-core')
 const podcast = require('./podcast')
-const handlers = require('./handlers')
 
 // ローカライズのためのインターセプター
 const LocalizationInterceptor = {
