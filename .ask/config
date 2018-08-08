@@ -17,6 +17,11 @@
       "resources": {
         "manifest": {
           "eTag": "e948951bd7840000fe60763c764a505b"
+        },
+        "interactionModel": {
+          "ja-JP": {
+            "eTag": "23c0fb1f394c34231dba74ea2ea71128"
+          }
         }
       }
     }
