@@ -101,6 +101,7 @@ exports.getEpisodeInfo = (podcastId, index) => {
       }).pipe(feedparser)
 
     feedparser.on('data', async (data) => {
+      console.log('on data:', data.title)
       if (episodes.length < targetPodcast.MAX_EPISODE_COUNT) {
         const audioUrl = pickSslMediaUrl(data.enclosures)
         episodes.push({
@@ -110,9 +111,9 @@ exports.getEpisodeInfo = (podcastId, index) => {
         })
       } else {
         if (!resolved) {
+          console.log(`data resolved ${data.title}`)
+          resolved = true
           try {
-            console.log(`data resolved ${data.title}`)
-            resolved = true
             await saveToCache(podcastId, episodes, head.headers)
             console.log('episodes[index]:', episodes[index])
             resolve(episodes[index])
@@ -121,6 +122,21 @@ exports.getEpisodeInfo = (podcastId, index) => {
           }
         }
       }
+    })
+
+    feedparser.on('end', async () => {
+      console.log('on end')
+      try {
+        await saveToCache(podcastId, episodes, head.headers)
+        console.log('episodes[index]:', episodes[index])
+        resolve(episodes[index])
+      } catch (e) {
+        console.log(e)
+      }
+    })
+
+    feedparser.on('error', () => {
+      console.log('on error')
     })
   })
 }
