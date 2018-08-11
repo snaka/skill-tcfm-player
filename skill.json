@@ -24,7 +24,7 @@
     "apis": {
       "custom": {
         "endpoint": {
-          "uri": "arn:aws:lambda:ap-northeast-1:105394972992:function:skill-tcfm-player-dev-main"
+          "uri": "arn:aws:lambda:ap-northeast-1:105394972992:function:skill-tcfm-player-prod-main"
         },
         "interfaces": [
           {
@@ -34,7 +34,7 @@
         "regions": {
           "FE": {
             "endpoint": {
-              "uri": "arn:aws:lambda:ap-northeast-1:105394972992:function:skill-tcfm-player-dev-main"
+              "uri": "arn:aws:lambda:ap-northeast-1:105394972992:function:skill-tcfm-player-prod-main"
             }
           }
         }

@@ -8,7 +8,7 @@
           "apis": {
             "custom": {
               "endpoint": {
-                "uri": "arn:aws:lambda:ap-northeast-1:105394972992:function:skill-tcfm-player-dev-main"
+                "uri": "arn:aws:lambda:ap-northeast-1:105394972992:function:skill-tcfm-player-prod-main"
               }
             }
           }
@@ -16,7 +16,7 @@
       },
       "resources": {
         "manifest": {
-          "eTag": "44d38d4b2a3f9407c41b7fbdbc8087ca"
+          "eTag": "00eeb4759cf2169b856d1914d8ca99ba"
         },
         "interactionModel": {
           "ja-JP": {
