@@ -25,3 +25,7 @@ functions:
       - alexaSkill:
           appId: ${env:SKILL_ID}
           enabled: true
+  cacheUpdator:
+    handler: cacheUpdator.handler
+    events:
+      - schedule: rate(10 minutes)
