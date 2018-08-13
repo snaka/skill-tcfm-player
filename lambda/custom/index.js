@@ -127,10 +127,29 @@ const FastforwardIntentHandler = {
     const t = handlerInput.attributesManager.getRequestAttributes().t
 
     const token = handlerInput.requestEnvelope.context.AudioPlayer.token
+    if (!token) {
+      const speechText = t('SPEECH_PLAYER_STATE_IS_NOT_PLAYING', podcast.config.MAX_EPISODE_COUNT)
+      return handlerInput.responseBuilder
+        .speak(speechText)
+        .getResponse()
+    }
+
     const offset = handlerInput.requestEnvelope.context.AudioPlayer.offsetInMilliseconds
     const index = parseToken(token)
     const episode = await podcast.getEpisodeInfo(podcast.config.ID, index)
-    const skipMinutes = getSlotValueAsInt(handlerInput.requestEnvelope, 'skipMinutes')
+
+    let skipMinutes
+    try {
+      skipMinutes = getSlotValueAsInt(handlerInput.requestEnvelope, 'skipMinutes')
+    } catch(e) {
+      const speechText = t('SPEECH_INVALID_FAST_FORWARD_MINUTES', podcast.config.MAX_EPISODE_COUNT)
+      const repromptText = t('PROMPT_FAST_FORWARD_MINUTES')
+      return handlerInput.responseBuilder
+        .speak(speechText)
+        .reprompt(repromptText)
+        .getResponse()
+    }
+
     let newOffset = offset + skipMinutes * 60000
 
     console.log(`FASTFORWARD: token ${token} offset ${offset} skipMinutes ${skipMinutes}`)
@@ -425,7 +444,7 @@ function createToken (podcastId, episodeIndex) {
 }
 
 function parseToken (token) {
-  const [, index] = token.split(':')
+  const [, index] = (token || '').split(':')
   return parseInt(index)
 }
 
