@@ -428,7 +428,6 @@ const ErrorHandler = {
 
     return handlerInput.responseBuilder
       .speak(speechText)
-      .reprompt(speechText)
       .getResponse()
   }
 }
