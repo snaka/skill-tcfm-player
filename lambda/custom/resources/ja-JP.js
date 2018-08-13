@@ -1,7 +1,7 @@
 module.exports = {
   translation: {
     SPEECH_START_PLAYING_EPISODE: '%s の最新エピソード「%s」を再生します',
-    SPEECH_INVALID_EPISODE_INDEX: 'ごめんなさい、最近の%dエピソードまでしか対応していません。何番目のエピソードが聴きたいですか？',
+    SPEECH_INVALID_EPISODE_INDEX: 'エピソードの番号は1から%sまでの数字で指定してください。何番目のエピソードが聴きたいですか？',
     SPEECH_START_PLAYING_EPISODE_AT: '%s の %d 番目のエピソード「%s」を再生します',
     SPEECH_START_OVER: '先頭から再生します',
     SPEECH_FASTFORWARD_X_MIN: '%d分進めます',

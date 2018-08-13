@@ -57,7 +57,19 @@ const PlayPodcastByIndexIntentHandler = {
     console.log('PLAY PODCAST WITH EPISODE NO.')
     const t = handlerInput.attributesManager.getRequestAttributes().t
 
-    const index = getSlotValueAsInt(handlerInput.requestEnvelope, 'indexOfEpisodes')
+    let index
+    try {
+      index = getSlotValueAsInt(handlerInput.requestEnvelope, 'indexOfEpisodes')
+    } catch(e) {
+      const speechText = t('SPEECH_INVALID_EPISODE_INDEX', podcast.config.MAX_EPISODE_COUNT)
+      const repromptText = t('PROMPT_INDEX_NUMBER')
+      return handlerInput.responseBuilder
+        .speak(speechText)
+        .reprompt(repromptText)
+        .withSimpleCard(t('CARD_TITLE_INVALID_EPISODE'), speechText)
+        .getResponse()
+    }
+
     if (index < 1 || index > podcast.config.MAX_EPISODE_COUNT) {
       console.log('INVALID INDEX:', index)
       const speechText = t('SPEECH_INVALID_EPISODE_INDEX', podcast.config.MAX_EPISODE_COUNT)
@@ -402,6 +414,8 @@ const ErrorHandler = {
   }
 }
 
+class InvalidSlotValueError extends Error {}
+
 function getToken (handlerInput) {
   return handlerInput.requestEnvelope.request.token
 }
@@ -423,7 +437,11 @@ function getSlotValueAsInt (envelope, slotName) {
     envelope.request.intent.slots &&
     envelope.request.intent.slots[slotName] &&
     envelope.request.intent.slots[slotName].value) {
-    return parseInt(envelope.request.intent.slots[slotName].value)
+    const parsedInt = parseInt(envelope.request.intent.slots[slotName].value)
+    if (!Number.isInteger(parsedInt)) {
+      throw new InvalidSlotValueError(`slotName: ${slotName}'s value '${parsedInt}' is not integer.`)
+    }
+    return parsedInt
   } else {
     return 0
   }

@@ -102,6 +102,18 @@ describe('番号指定でエピソードを再生', () => {
       }
     ])
   })
+
+  context('不明な番号が指定された場合', () => {
+    alexaTest.test([
+      {
+        request: alexaTest.getIntentRequest('PlayPodcastByIndexIntent', { indexOfEpisodes: '?' }),
+        saysLike: 'エピソードの番号は1から100までの数字で指定してください',
+        repromptsLike: '何番目のエピソードが聴きたいですか？',
+        repromptsNothing: false,
+        shouldEndSession: false
+      }
+    ])
+  })
 })
 
 describe('先頭からを指示', () => {
