@@ -5,6 +5,13 @@
 const Alexa = require('ask-sdk-core')
 const podcast = require('./podcast')
 
+// ログ用のインターセプター
+const LoggingInterceptor = {
+  process (handlerInput) {
+    console.log('REQUEST:', JSON.stringify(handlerInput))
+  }
+}
+
 // ローカライズのためのインターセプター
 const LocalizationInterceptor = {
   process (handlerInput) {
@@ -139,16 +146,16 @@ const FastforwardIntentHandler = {
     const episode = await podcast.getEpisodeInfo(podcast.config.ID, index)
 
     let skipMinutes
-    try {
+    // try {
       skipMinutes = getSlotValueAsInt(handlerInput.requestEnvelope, 'skipMinutes')
-    } catch(e) {
-      const speechText = t('SPEECH_INVALID_FAST_FORWARD_MINUTES', podcast.config.MAX_EPISODE_COUNT)
-      const repromptText = t('PROMPT_FAST_FORWARD_MINUTES')
-      return handlerInput.responseBuilder
-        .speak(speechText)
-        .reprompt(repromptText)
-        .getResponse()
-    }
+    // } catch(e) {
+    //   const speechText = t('SPEECH_INVALID_FAST_FORWARD_MINUTES', podcast.config.MAX_EPISODE_COUNT)
+    //   const repromptText = t('PROMPT_FAST_FORWARD_MINUTES')
+    //   return handlerInput.responseBuilder
+    //     .speak(speechText)
+    //     .reprompt(repromptText)
+    //     .getResponse()
+    // }
 
     let newOffset = offset + skipMinutes * 60000
 
@@ -172,10 +179,29 @@ const RewindIntentHandler = {
     const t = handlerInput.attributesManager.getRequestAttributes().t
 
     const token = handlerInput.requestEnvelope.context.AudioPlayer.token
+    if (!token) {
+      const speechText = t('SPEECH_PLAYER_STATE_IS_NOT_PLAYING', podcast.config.MAX_EPISODE_COUNT)
+      return handlerInput.responseBuilder
+        .speak(speechText)
+        .getResponse()
+    }
+
     const offset = handlerInput.requestEnvelope.context.AudioPlayer.offsetInMilliseconds
     const index = parseToken(token)
     const episode = await podcast.getEpisodeInfo(podcast.config.ID, index)
-    const skipMinutes = getSlotValueAsInt(handlerInput.requestEnvelope, 'skipMinutes')
+
+    let skipMinutes
+    // try {
+      skipMinutes = getSlotValueAsInt(handlerInput.requestEnvelope, 'skipMinutes')
+    // } catch(e) {
+    //   const speechText = t('SPEECH_INVALID_REWIND_MINUTES', podcast.config.MAX_EPISODE_COUNT)
+    //   const repromptText = t('PROMPT_REWIND_MINUTES')
+    //   return handlerInput.responseBuilder
+    //     .speak(speechText)
+    //     .reprompt(repromptText)
+    //     .getResponse()
+    // }
+
     let newOffset = offset - skipMinutes * 60000
     if (newOffset < 0) newOffset = 0
 
@@ -219,7 +245,6 @@ const CancelAndStopIntentHandler = {
         request.intent.name === 'AMAZON.PauseIntent')
   },
   handle (handlerInput) {
-    console.log(handlerInput.requestEnvelope.context.AudioPlayer)
     const t = handlerInput.attributesManager.getRequestAttributes().t
 
     const playerActivity = handlerInput.requestEnvelope.context.AudioPlayer.playerActivity
@@ -258,8 +283,6 @@ const ResumeIntentHandler = {
       request.intent.name === 'AMAZON.ResumeIntent'
   },
   async handle (handlerInput) {
-    console.log(handlerInput.requestEnvelope.context.AudioPlayer)
-
     const token = handlerInput.requestEnvelope.context.AudioPlayer.token
     const offset = handlerInput.requestEnvelope.context.AudioPlayer.offsetInMilliseconds
     const index = parseToken(token)
@@ -368,8 +391,6 @@ const AudioPlayerEventHandler = {
     } = handlerInput
     const audioPlayerEventName = requestEnvelope.request.type.split('.')[1]
 
-    console.log('handlerInput: ', handlerInput)
-
     let token = getToken(handlerInput)
 
     switch (audioPlayerEventName) {
@@ -423,7 +444,6 @@ const ErrorHandler = {
   handle (handlerInput, error) {
     const t = handlerInput.attributesManager.getRequestAttributes().t
     const speechText = t('SPEECH_ERROR_OCCURRED')
-    console.log(handlerInput.requestEnvelope.request.intent)
     console.log(`ERROR: ${error.message}`)
 
     return handlerInput.responseBuilder
@@ -469,7 +489,8 @@ const skillBuilder = Alexa.SkillBuilders.custom()
 
 exports.handler = skillBuilder
   .addRequestInterceptors(
-    LocalizationInterceptor
+    LocalizationInterceptor,
+    LoggingInterceptor
   )
   .addRequestHandlers(
     PlayPodcastIntentHandler,

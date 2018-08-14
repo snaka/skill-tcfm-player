@@ -160,27 +160,13 @@ describe('早送り', () => {
     const invalidRequest = alexaTest.getIntentRequest('FastforwardIntent', { 'skipMinutes': '?' })
     alexaTest.addAudioPlayerContextToRequest(invalidRequest, 'turingcomplete.fm:0', 60000)
 
-    const validRequest = alexaTest.getIntentRequest('FastforwardIntent', { 'skipMinutes': 5 })
-    alexaTest.addAudioPlayerContextToRequest(validRequest, 'turingcomplete.fm:0', 60000)
-
     alexaTest.test([
       {
         request: invalidRequest,
-        saysLike: '早送りする分数を指定してください。何分進めますか？',
-        repromptsLike: '何分進めますか？',
-        shouldEndSession: false
+        saysLike: 'ごめんなさい、よく理解できませんでした',
+        repromptsNothing: true,
+        shouldEndSession: true
       },
-      {
-        request: validRequest,
-        saysLike: '5分進めます',
-        shouldEndSession: true,
-        playsStream: {
-          behavior: 'REPLACE_ALL',
-          token: 'turingcomplete.fm:0',
-          url: 'https://tracking.feedpress.it/link/18928/9899277/29.mp3',
-          offset: 360000
-        }
-      }
     ])
   })
 
@@ -214,6 +200,32 @@ describe('巻き戻し', () => {
       }
     }
   ])
+
+  context('不正な数が指定されている場合', () => {
+    const invalidRequest = alexaTest.getIntentRequest('RewindIntent', { 'skipMinutes': '?' })
+    alexaTest.addAudioPlayerContextToRequest(invalidRequest, 'turingcomplete.fm:0', 360000)
+
+    alexaTest.test([
+      {
+        request: invalidRequest,
+        saysLike: 'ごめんなさい、よく理解できませんでした',
+        repromptsNothing: true,
+        shouldEndSession: true
+      },
+    ])
+  })
+
+  context('再生中ではない場合', () => {
+    const request = alexaTest.getIntentRequest('RewindIntent', { 'skipMinutes': 5 })
+
+    alexaTest.test([
+      {
+        request,
+        saysLike: 'その操作はエピソードを再生中の場合のみ可能です',
+        shouldEndSession: true
+      }
+    ])
+  })
 })
 
 describe('ヘルプ', () => {
