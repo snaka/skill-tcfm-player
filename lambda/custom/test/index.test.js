@@ -1,7 +1,6 @@
 /* eslint-env mocha */
 const path = require('path')
 const nock = require('nock')
-const assert = require('assert')
 const alexaTest = require('alexa-skill-test-framework')
 
 alexaTest.initialize(
@@ -166,7 +165,7 @@ describe('早送り', () => {
         saysLike: 'ごめんなさい、よく理解できませんでした',
         repromptsNothing: true,
         shouldEndSession: true
-      },
+      }
     ])
   })
 
@@ -211,7 +210,7 @@ describe('巻き戻し', () => {
         saysLike: 'ごめんなさい、よく理解できませんでした',
         repromptsNothing: true,
         shouldEndSession: true
-      },
+      }
     ])
   })
 

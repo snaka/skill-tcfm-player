@@ -11,7 +11,7 @@ fs.readdirSync('resources').forEach((file) => {
   const isJs = /.*\.js$/.test(file)
 
   if (!isFile || !isJs) {
-    return;
+    return
   }
   const lang = file.replace('.js', '')
   translations[lang] = require(`./${path.join('resources', file)}`)

@@ -67,7 +67,7 @@ const PlayPodcastByIndexIntentHandler = {
     let index
     try {
       index = getSlotValueAsInt(handlerInput.requestEnvelope, 'indexOfEpisodes')
-    } catch(e) {
+    } catch (e) {
       const speechText = t('SPEECH_INVALID_EPISODE_INDEX', podcast.config.MAX_EPISODE_COUNT)
       const repromptText = t('PROMPT_INDEX_NUMBER')
       return handlerInput.responseBuilder
@@ -145,17 +145,7 @@ const FastforwardIntentHandler = {
     const index = parseToken(token)
     const episode = await podcast.getEpisodeInfo(podcast.config.ID, index)
 
-    let skipMinutes
-    // try {
-      skipMinutes = getSlotValueAsInt(handlerInput.requestEnvelope, 'skipMinutes')
-    // } catch(e) {
-    //   const speechText = t('SPEECH_INVALID_FAST_FORWARD_MINUTES', podcast.config.MAX_EPISODE_COUNT)
-    //   const repromptText = t('PROMPT_FAST_FORWARD_MINUTES')
-    //   return handlerInput.responseBuilder
-    //     .speak(speechText)
-    //     .reprompt(repromptText)
-    //     .getResponse()
-    // }
+    const skipMinutes = getSlotValueAsInt(handlerInput.requestEnvelope, 'skipMinutes')
 
     let newOffset = offset + skipMinutes * 60000
 
@@ -190,17 +180,7 @@ const RewindIntentHandler = {
     const index = parseToken(token)
     const episode = await podcast.getEpisodeInfo(podcast.config.ID, index)
 
-    let skipMinutes
-    // try {
-      skipMinutes = getSlotValueAsInt(handlerInput.requestEnvelope, 'skipMinutes')
-    // } catch(e) {
-    //   const speechText = t('SPEECH_INVALID_REWIND_MINUTES', podcast.config.MAX_EPISODE_COUNT)
-    //   const repromptText = t('PROMPT_REWIND_MINUTES')
-    //   return handlerInput.responseBuilder
-    //     .speak(speechText)
-    //     .reprompt(repromptText)
-    //     .getResponse()
-    // }
+    const skipMinutes = getSlotValueAsInt(handlerInput.requestEnvelope, 'skipMinutes')
 
     let newOffset = offset - skipMinutes * 60000
     if (newOffset < 0) newOffset = 0
