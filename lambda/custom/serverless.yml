@@ -1,7 +1,12 @@
 service: skill-tcfm-player
 
+plugins:
+  - serverless-plugin-warmup
+  - serverless-plugin-tracing
+
 provider:
   name: aws
+  tracing: true
   region: ap-northeast-1
   runtime: nodejs8.10
   memorySize: 128
@@ -24,9 +29,11 @@ provider:
             - Ref: AWS::Region
             - Ref: AWS::AccountId
             - function:${self:service}-${opt:stage, self:provider.stage}-*
-
-plugins:
-  - serverless-plugin-warmup
+    - Effect: "Allow"
+      Action:
+        - "xray:PutTraceSegments"
+        - "xray:PutTelemetryRecords"
+      Resource: "*"
 
 custom:
   warmup:
