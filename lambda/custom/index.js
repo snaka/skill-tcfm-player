@@ -5,10 +5,17 @@
 const Alexa = require('ask-sdk-core')
 const podcast = require('./podcast')
 
-// ログ用のインターセプター
-const LoggingInterceptor = {
+// ログ用のインターセプター(REQUEST)
+const RequestLoggingInterceptor = {
   process (handlerInput) {
     console.log('REQUEST:', JSON.stringify(handlerInput))
+  }
+}
+
+// ログ用のインターセプター(RESPONSE)
+const ResponseLoggingInterceptor = {
+  process (handlerInput, response) {
+    console.log('RESPONSE:', JSON.stringify(response))
   }
 }
 
@@ -479,7 +486,10 @@ const skillBuilder = Alexa.SkillBuilders.custom()
 exports.handler = skillBuilder
   .addRequestInterceptors(
     LocalizationInterceptor,
-    LoggingInterceptor
+    RequestLoggingInterceptor
+  )
+  .addResponseInterceptors(
+    ResponseLoggingInterceptor
   )
   .addRequestHandlers(
     WarmUpHandler,
