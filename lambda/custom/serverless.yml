@@ -54,7 +54,7 @@ functions:
           appId: ${env:SKILL_ID}
           enabled: true
     environment:
-      PERSISTENT_STORE_TABLE: alexa-skill-podcasts-player-persistent-store-${opt:stage, self:provider.stage}
+      PERSISTENT_STORE_TABLE: tcfm-player-user-${opt:stage, self:provider.stage}
   cacheUpdator:
     handler: cacheUpdator.handler
     events:
