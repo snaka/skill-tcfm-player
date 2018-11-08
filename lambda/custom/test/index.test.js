@@ -3,6 +3,48 @@ const path = require('path')
 const nock = require('nock')
 const alexaTest = require('alexa-skill-test-framework')
 
+const AWSMOCK = require('aws-sdk-mock')
+AWSMOCK.mock('DynamoDB', 'createTable', (params, callback) => {
+  console.log('MOCK createTable:', params)
+  callback(null, {})
+})
+AWSMOCK.mock('DynamoDB.DocumentClient', 'get', (params, callback) => {
+  console.log('MOCK get:', params)
+  switch (params.TableName) {
+    case 'persistent-store-test':
+      callback(null, {
+        Item: {
+          id: 'hoge',
+          attributes: {
+            offsetByUrl: {
+              'https://example.com/hoge.mp3': 12345
+            }
+          }
+        }
+      })
+      break
+    case 'alexa-skill-podcasts-player':
+      callback(null, {
+        Item: {
+          podcastId: 'hoge',
+          timeStamp: 1234567,
+          episodes: undefined,
+          headers: {
+            etag: '"abcdef1234567890"'
+          }
+        }
+      })
+      break
+    default:
+      callback(null, {})
+  }
+})
+AWSMOCK.mock('DynamoDB.DocumentClient', 'put', (params, callback) => {
+  console.log('MOCK put:', params)
+  callback(null, {})
+})
+
+
 alexaTest.initialize(
   require('../index.js'),
   'amzn1.ask.skill.00000000-0000-0000-0000-000000000000',
@@ -25,7 +67,7 @@ beforeEach(() => {
     .replyWithFile(200, path.join(__dirname, '/replies/tcfm'), { 'Content-Type': 'text/xml; charset=UTF-8' })
 })
 
-alexaTest.setDynamoDBTable('alexa-skill-podcasts-player')
+// alexaTest.setDynamoDBTable('alexa-skill-podcasts-player')
 
 describe('スキル起動時', () => {
   alexaTest.test([
