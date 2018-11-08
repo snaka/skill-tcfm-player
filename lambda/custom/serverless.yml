@@ -6,7 +6,6 @@ plugins:
 
 provider:
   name: aws
-  tracing: true
   region: ap-northeast-1
   runtime: nodejs8.10
   memorySize: 128
@@ -14,10 +13,12 @@ provider:
   iamRoleStatements:
     - Effect: "Allow"
       Action:
+        - "dynamodb:CreateTable"
+        - "dynamodb:DeleteTable"
         - "dynamodb:PutItem"
         - "dynamodb:DeleteItem"
         - "dynamodb:GetItem"
-      Resource: "*"
+      Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/*"
     - Effect: "Allow"
       Action:
         - "lambda:InvokeFunction"
@@ -46,11 +47,14 @@ package:
 functions:
   main:
     warmup: true
+    tracing: true
     handler: index.handler
     events:
       - alexaSkill:
           appId: ${env:SKILL_ID}
           enabled: true
+    environment:
+      PERSISTENT_STORE_TABLE: alexa-skill-podcasts-player-persistent-store-${opt:stage, self:provider.stage}
   cacheUpdator:
     handler: cacheUpdator.handler
     events:
