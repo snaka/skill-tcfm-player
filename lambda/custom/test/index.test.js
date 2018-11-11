@@ -44,7 +44,6 @@ AWSMOCK.mock('DynamoDB.DocumentClient', 'put', (params, callback) => {
   callback(null, {})
 })
 
-
 alexaTest.initialize(
   require('../index.js'),
   'amzn1.ask.skill.00000000-0000-0000-0000-000000000000',
