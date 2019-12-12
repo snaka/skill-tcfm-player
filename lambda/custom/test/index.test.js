@@ -58,7 +58,7 @@ beforeEach(() => {
     .head('/tcfm')
     .times(2)
     .reply(200, '', {
-      'ETag': '__etag__'
+      ETag: '__etag__'
     })
 
   nock('https://feeds.turingcomplete.fm')
@@ -178,7 +178,7 @@ describe('先頭からを指示', () => {
 
 describe('早送り', () => {
   context('正しい分数が指定されている場合', () => {
-    const request = alexaTest.getIntentRequest('FastforwardIntent', { 'skipMinutes': 5 })
+    const request = alexaTest.getIntentRequest('FastforwardIntent', { skipMinutes: 5 })
     alexaTest.addAudioPlayerContextToRequest(request, 'turingcomplete.fm:0', 60000)
 
     alexaTest.test([
@@ -197,7 +197,7 @@ describe('早送り', () => {
   })
 
   context('不正な数が指定されている場合', () => {
-    const invalidRequest = alexaTest.getIntentRequest('FastforwardIntent', { 'skipMinutes': '?' })
+    const invalidRequest = alexaTest.getIntentRequest('FastforwardIntent', { skipMinutes: '?' })
     alexaTest.addAudioPlayerContextToRequest(invalidRequest, 'turingcomplete.fm:0', 60000)
 
     alexaTest.test([
@@ -211,7 +211,7 @@ describe('早送り', () => {
   })
 
   context('再生中ではない場合', () => {
-    const request = alexaTest.getIntentRequest('FastforwardIntent', { 'skipMinutes': 5 })
+    const request = alexaTest.getIntentRequest('FastforwardIntent', { skipMinutes: 5 })
 
     alexaTest.test([
       {
@@ -224,7 +224,7 @@ describe('早送り', () => {
 })
 
 describe('巻き戻し', () => {
-  const request = alexaTest.getIntentRequest('RewindIntent', { 'skipMinutes': 5 })
+  const request = alexaTest.getIntentRequest('RewindIntent', { skipMinutes: 5 })
   alexaTest.addAudioPlayerContextToRequest(request, 'turingcomplete.fm:0', 360000)
 
   alexaTest.test([
@@ -242,7 +242,7 @@ describe('巻き戻し', () => {
   ])
 
   context('不正な数が指定されている場合', () => {
-    const invalidRequest = alexaTest.getIntentRequest('RewindIntent', { 'skipMinutes': '?' })
+    const invalidRequest = alexaTest.getIntentRequest('RewindIntent', { skipMinutes: '?' })
     alexaTest.addAudioPlayerContextToRequest(invalidRequest, 'turingcomplete.fm:0', 360000)
 
     alexaTest.test([
@@ -256,7 +256,7 @@ describe('巻き戻し', () => {
   })
 
   context('再生中ではない場合', () => {
-    const request = alexaTest.getIntentRequest('RewindIntent', { 'skipMinutes': 5 })
+    const request = alexaTest.getIntentRequest('RewindIntent', { skipMinutes: 5 })
 
     alexaTest.test([
       {
